@@ -15,7 +15,7 @@ impl Bird {
     pub fn new(position: Vec2) -> Bird {
         Bird {
             position: position,
-            velocity: Vec2 { x: 0f32, y: 0f32 },
+            velocity: Vec2 { x: 16f32, y: 0f32 },
             width: 32_f32,
             height: 32_f32,
             gravity: 75_f32,

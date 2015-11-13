@@ -2,6 +2,7 @@ extern crate sdl2;
 
 mod algebra;
 mod bird;
+mod pipe;
 
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
@@ -10,6 +11,9 @@ use sdl2::pixels::Color;
 
 use algebra::Vec2;
 use algebra::Rect;
+
+use bird::Bird;
+use pipe::Pipe;
 
 pub fn main() {
     let sdl_context = sdl2::init().unwrap();
@@ -24,7 +28,9 @@ pub fn main() {
     let mut renderer = window.renderer().build().unwrap();
     let mut event_pump = sdl_context.event_pump().unwrap();
 
-    let mut bird = bird::Bird::new(Vec2::new(64_f32, 400_f32));
+    let mut bird = Bird::new(Vec2::new(64_f32, 400_f32));
+
+    let pipe = Pipe::new(300_f32, 300_f32);
 
     'running: loop {
         for event in event_pump.poll_iter() {
@@ -44,7 +50,9 @@ pub fn main() {
         renderer.set_draw_color(Color::RGB(0, 0, 0));
         renderer.clear();
 
-        render_rect(&mut renderer, bird.get_rect(), Color::RGB(255, 255, 255));
+        render_rect(&mut renderer, bird.get_rect(), Color::RGB(255, 0, 0));
+        render_rect(&mut renderer, pipe.get_top_rect(), Color::RGB(0, 255, 0));
+        render_rect(&mut renderer, pipe.get_bottom_rect(), Color::RGB(0, 255, 0));
 
         renderer.present();
     }
