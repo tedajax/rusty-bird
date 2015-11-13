@@ -29,7 +29,6 @@ pub fn main() {
     let mut event_pump = sdl_context.event_pump().unwrap();
 
     let mut bird = Bird::new(Vec2::new(64_f32, 400_f32));
-
     let mut camera = Vec2::new(0_f32, 0_f32);
 
     const PIPE_COUNT: usize = 5;
@@ -43,6 +42,8 @@ pub fn main() {
     }
 
     let mut next_pipe_location = PIPE_BASE_POSITION + PIPE_SPACING * (PIPE_COUNT as f32);
+
+    let mut score: i32 = 0;
 
     'running: loop {
         for event in event_pump.poll_iter() {
@@ -65,9 +66,15 @@ pub fn main() {
         camera.x = bird.get_position().x - 64f32;
 
         for mut pipe in pipes.iter_mut() {
-            if pipe.get_center().x < camera.x - pipe.get_width() / 2f32 {
+            let pipe_center = pipe.get_center();
+            if pipe_center.x < camera.x - pipe.get_width() / 2f32 {
                 pipe.set_center(Vec2::new(next_pipe_location, 300f32));
                 next_pipe_location += PIPE_SPACING;
+            }
+
+            if pipe.try_pass(bird.get_position()) {
+                score += 1;
+                println!("Score! {}", score);
             }
         }
 
@@ -82,20 +89,10 @@ pub fn main() {
 }
 
 fn render_rect(renderer: &mut Renderer, camera: &Vec2, rect: Rect, color: Color) {
-    let sdl_rect = sdl2::rect::Rect::new(
-            (rect.position.x - camera.x) as i32,
-            (rect.position.y - camera.y) as i32,
-            rect.width as u32,
-            rect.height as u32
-        ).unwrap();
-
-    match sdl_rect {
-        Some(r) => {
-            renderer.set_draw_color(color);
-            renderer.fill_rect(r);            
-        },
-        _ => {}
-    }
+    let r = rect - *camera;
+    let sdl_rect = r.into();
+    renderer.set_draw_color(color);
+    renderer.fill_rect(sdl_rect);
 }
 
 fn render_pipe(renderer: &mut Renderer, camera: &Vec2, pipe: &Pipe, color: Color) {
