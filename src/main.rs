@@ -30,7 +30,7 @@ pub fn main() {
 
     let mut bird = Bird::new(Vec2::new(64_f32, 400_f32));
 
-    let pipe = Pipe::new(300_f32, 300_f32);
+    let pipe = Pipe::new(Vec2::new(300_f32, 300_f32));
 
     'running: loop {
         for event in event_pump.poll_iter() {
