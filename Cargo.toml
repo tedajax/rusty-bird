@@ -1,0 +1,7 @@
+[package]
+name = "rusty-bird"
+version = "0.1.0"
+authors = ["Ted Dobyns <ted@toytalk.com>"]
+
+[dependencies]
+sdl2="0.10"
