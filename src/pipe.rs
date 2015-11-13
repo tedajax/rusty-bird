@@ -17,6 +17,13 @@ impl Pipe {
         }
     }
 
+    pub fn get_center(self) -> Vec2 { self.center }
+    pub fn get_width(self) -> f32 { self.width }
+
+    pub fn set_center(&mut self, center: Vec2) {
+        self.center = center;
+    }
+
     pub fn get_top_rect(self) -> Rect {
         Rect {
             position: Vec2 {

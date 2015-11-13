@@ -15,11 +15,11 @@ impl Bird {
     pub fn new(position: Vec2) -> Bird {
         Bird {
             position: position,
-            velocity: Vec2 { x: 16f32, y: 0f32 },
+            velocity: Vec2 { x: 64f32, y: 0f32 },
             width: 32_f32,
             height: 32_f32,
-            gravity: 75_f32,
-            flap_force: 125_f32,
+            gravity: 200_f32,
+            flap_force: 200_f32,
         }
     }
 
@@ -30,6 +30,10 @@ impl Bird {
 
     pub fn flap(&mut self) {
         self.velocity.y = -self.flap_force;
+    }
+
+    pub fn get_position(self) -> Vec2 {
+        self.position
     }
 
     pub fn get_rect(self) -> Rect {
