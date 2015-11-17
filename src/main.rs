@@ -3,6 +3,7 @@ extern crate sdl2;
 mod algebra;
 mod bird;
 mod pipe;
+mod gametime;
 
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
@@ -13,6 +14,7 @@ use algebra::Vec2;
 use algebra::Rect;
 
 use bird::Bird;
+use bird::BirdState;
 use pipe::Pipe;
 
 pub fn main() {
@@ -28,11 +30,12 @@ pub fn main() {
     let mut renderer = window.renderer().build().unwrap();
     let mut event_pump = sdl_context.event_pump().unwrap();
 
-    let mut bird = Bird::new(Vec2::new(64_f32, 400_f32));
+    let mut bird = Bird::new();
+    bird.set_state(BirdState::Flying);
     let mut camera = Vec2::new(0_f32, 0_f32);
 
     const PIPE_COUNT: usize = 5;
-    const PIPE_BASE_POSITION: f32 = 800f32;
+    const PIPE_BASE_POSITION: f32 = 1000f32;
     const PIPE_SPACING: f32 = 400f32;
 
     let mut pipes: Vec<Pipe> = vec![];
@@ -45,6 +48,8 @@ pub fn main() {
 
     let mut score: i32 = 0;
 
+    let mut gametime = gametime::GameTime::new();
+
     'running: loop {
         for event in event_pump.poll_iter() {
             match event {
@@ -53,12 +58,17 @@ pub fn main() {
                 },
                 Event::KeyDown { keycode: Some(Keycode::Z), .. } => {
                     bird.flap();
+                },
+                Event::KeyDown { keycode: Some(Keycode::X), .. } => {
+                    bird.set_state(BirdState::Dead);
                 }
                 _ => {}
             }
         }
 
-        bird.update(0.016_f32);
+        gametime.update();
+
+        bird.update(gametime.dt());
 
         renderer.set_draw_color(Color::RGB(0, 0, 0));
         renderer.clear();
@@ -78,11 +88,18 @@ pub fn main() {
             }
         }
 
-        render_rect(&mut renderer, &camera, bird.get_rect(), Color::RGB(255, 0, 0));
-
         for pipe in pipes.iter() {
             render_pipe(&mut renderer, &camera, &pipe, Color::RGB(0, 255, 0));
         }
+
+        {
+            let top_rect = Rect::new(0f32, 0f32, 800f32, 32f32);
+            let bottom_rect = Rect::new(0f32, 600f32 - 32f32, 800f32, 32f32);
+            render_rect(&mut renderer, &Vec2::zero(), top_rect, Color::RGB(196, 118, 0));
+            render_rect(&mut renderer, &Vec2::zero(), bottom_rect, Color::RGB(196, 118, 0));
+        }
+
+        render_rect(&mut renderer, &camera, bird.get_rect(), Color::RGB(255, 0, 0));
 
         renderer.present();
     }

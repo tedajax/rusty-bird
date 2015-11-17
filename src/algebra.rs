@@ -2,6 +2,7 @@ extern crate sdl2;
 
 use std::ops::Add;
 use std::ops::Sub;
+use std::ops::Neg;
 use std::ops::Mul;
 use std::ops::Div;
 
@@ -16,6 +17,11 @@ impl Vec2 {
     pub fn new(x: f32, y: f32) -> Vec2 {
         Vec2 { x: x, y: y }
     }
+
+    pub fn zero() -> Vec2 { Vec2 { x: 0f32, y: 0f32 } }
+    pub fn one() -> Vec2 { Vec2 { x: 1f32, y: 1f32 } }
+    pub fn unit_x() -> Vec2 { Vec2 { x: 1f32, y: 0f32 } }
+    pub fn unit_y() -> Vec2 { Vec2 { x: 0f32, y: 1f32 } }
 
     pub fn magnitude_sqr(self) -> f32 {
         self.x * self.x + self.y * self.y
@@ -52,6 +58,17 @@ impl Sub<Vec2> for Vec2 {
         Vec2 {
             x: self.x - rhs.x,
             y: self.y - rhs.y,
+        }
+    }
+}
+
+impl Neg for Vec2 {
+    type Output = Vec2;
+
+    fn neg(self) -> Vec2 {
+        Vec2 {
+            x: -self.x,
+            y: -self.y,
         }
     }
 }

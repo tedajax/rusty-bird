@@ -5,3 +5,4 @@ authors = ["Ted Dobyns <ted@toytalk.com>"]
 
 [dependencies]
 sdl2="0.10"
+time="0.1"
