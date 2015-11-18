@@ -1,7 +1,7 @@
 use algebra::Vec2;
 use algebra::Rect;
 
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub enum BirdState {
     Idle,       // Menu style
     Flying,     // In play
@@ -33,7 +33,7 @@ impl Bird {
             velocity: Vec2::new(0_f32, 0_f32),
             width: 32_f32,
             height: 32_f32,
-            state: BirdState::Flying,
+            state: BirdState::Idle,
             config: BirdConfig {
                 start_position: Vec2::new(64_f32, 300_f32),
                 speed: 200_f32,
@@ -54,7 +54,7 @@ impl Bird {
         self.position = self.position + self.velocity * dt;
     }
 
-    pub fn set_state(&mut self, state: BirdState) {
+    fn force_state(&mut self, state: BirdState) {
         match state {
             BirdState::Idle => {
                 self.position = self.config.start_position;
@@ -74,6 +74,16 @@ impl Bird {
 
         self.state = state;
     }
+
+    pub fn set_state(&mut self, state: BirdState) {
+        if self.state == state {
+            return;
+        }
+
+        self.force_state(state);
+    }
+
+    pub fn get_state(self) -> BirdState { self.state }
 
     fn force_flap(&mut self) {
         self.velocity.y = -self.config.flap_force;
